@@ -18,7 +18,7 @@ if not os.path.exists(app.config['UPLOAD_FOLDER']):
 db = SQLAlchemy(app)
 
 class Artwork(db.Model):
-    __tablename__ = 'artworks'  # Ensure the table name is correct
+    __tablename__ = 'artworks'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     artist = db.Column(db.String(100), nullable=False)
@@ -44,15 +44,11 @@ def index():
 
 @app.route('/upload_artwork', methods=['POST'])
 def upload_artwork():
-    print('Form data:', request.form)
-    print('File data:', request.files)
-    # Check if all required form fields are present
     required_fields = ['artworkImage', 'artworkTitle', 'artworkArtist', 'artworkPrice']
     missing_fields = [field for field in required_fields if field not in request.form and field not in request.files]
     if missing_fields:
         return jsonify({"error": f"Missing fields: {', '.join(missing_fields)}"}), 400
 
-    # Extract the uploaded file, title, artist, and price
     image = request.files.get('artworkImage')
     title = request.form.get('artworkTitle')
     artist = request.form.get('artworkArtist')
@@ -69,10 +65,10 @@ def upload_artwork():
             new_artwork = Artwork(title=title, artist=artist, price=price, image_url=image_url)
             db.session.add(new_artwork)
             db.session.commit()
-            print(f"Artwork ID {new_artwork.id} uploaded successfully!")  # Log the new artwork ID
+            print(f"Artwork ID {new_artwork.id} uploaded successfully!") 
             return jsonify({"message": "Artwork uploaded successfully!", "id": new_artwork.id})
         except Exception as e:
-            db.session.rollback()  # Rollback in case of exception
+            db.session.rollback()
             app.logger.error(f"An error occurred while uploading artwork: {e}")
             return jsonify({"error": "An error occurred while uploading artwork."}), 500
     else:
@@ -81,7 +77,7 @@ def upload_artwork():
 @app.route('/get_artworks', methods=['GET'])
 def get_artworks():
     try:
-        artworks = Artwork.query.all()  # Use SQLAlchemy ORM to fetch all artwork records
+        artworks = Artwork.query.all()
         artworks_list = [{"id": artwork.id, "title": artwork.title, "artist": artwork.artist, "price": artwork.price, "image_url": artwork.image_url} for artwork in artworks]
         print(artworks_list)
         return jsonify(artworks_list)

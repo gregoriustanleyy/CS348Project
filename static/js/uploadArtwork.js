@@ -30,7 +30,7 @@ function addNewArtworkToDOM(artwork) {
     const artworkList = document.getElementById('artworkList');
     const artContainer = document.createElement('div');
     artContainer.className = 'art-container';
-    artContainer.setAttribute('data-id', artwork.id); // Make sure each artwork has a unique identifier.
+    artContainer.setAttribute('data-id', artwork.id); 
 
     artContainer.innerHTML = `
         <img src="${artwork.image_url}" alt="${artwork.title}">
@@ -62,11 +62,10 @@ function updateArtworkList() {
     .then(artworks => {
         console.log('Retrieved artworks:', artworks);
         const artworkList = document.getElementById('artworkList');
-        artworkList.innerHTML = ''; // Clear the list to repopulate
+        artworkList.innerHTML = ''; 
         artworks.forEach(artwork => {
             const artContainer = document.createElement('div');
             artContainer.className = 'art-container';
-            // Make sure your image URLs are correct here
             artContainer.innerHTML = `
                 <img src="${artwork.image_url}" alt="${artwork.title}" />
                 <h3>${artwork.title}</h3>
