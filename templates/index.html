@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArtNet</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="top-menu">
+        <img src="static\logo.png" alt="ArtNet Logo" id="logo">
+        <input type="text" placeholder="Search for artwork or artist">
+        <div>User Icon | Login/Register</div>
+    </div>
+    
+    <div class="nav-bar">
+        <a href="#" class="active">Home</a>
+        <a href="#" onclick="showAddArtworkForm(); return false;">Add Artwork</a>
+        <a href="#">Browse by Category</a>
+        <a href="#">My Cart</a>
+        <a href="#">My Profile</a>
+    </div>
+    
+    <div class="main-content" id="artworkList">
+        <!-- Example of an art container -->
+        <div class="art-container">
+            {% for filename in image_filenames %}
+            <div class="art-container">
+                <img src="{{ url_for('static', filename='uploads/' + filename) }}" alt="Artwork Title">
+                <h3>Artwork Title</h3>
+                <p>Artist Name</p>
+                <p>Price</p>
+                <div class="button-group">
+                    <button class="add-to-cart">Add to Cart</button>
+                    <button class="delete-artwork" data-artwork-id="{{ artwork.id }}">
+                        <img src="static/trash.png" alt="Delete">
+                    </button>                    
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <!-- Repeat for each artwork -->
+    </div>
+    
+    <div id="backdrop"></div>
+    <div id="addArtworkForm">
+        <form id="artworkForm" method="post" enctype="multipart/form-data">
+            <h2>Add New Artwork</h2>
+            <input type="file" name="artworkImage" required><br>
+            <input type="text" name="artworkTitle" placeholder="Title" required><br>
+            <input type="text" name="artworkArtist" placeholder="Artist" required><br>
+            <input type="number" name="artworkPrice" placeholder="Price" required><br>
+            <button type="submit">Upload Artwork</button>
+            <button type="button" onclick="closeForm()">Close</button>
+        </form>
+    </div>
+    <div id="uploadModal" class="modal">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <p id="modalText">Upload successful!</p>
+          <button id="modalOkBtn">OK</button>
+        </div>
+      </div>
+    <div class="footer">
+        <p>© 2023 ArtNet - All Rights Reserved</p>
+    </div>
+</body>
+<script src="/static/js/uploadArtwork.js"></script>
+</html>
