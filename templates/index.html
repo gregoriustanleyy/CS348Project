@@ -14,31 +14,38 @@
     </div>
     
     <div class="nav-bar">
-        <a href="#" class="active">Home</a>
+        <a href="#" id="homeLink" class="active">Home</a>
         <a href="#" onclick="showAddArtworkForm(); return false;">Add Artwork</a>
         <a href="#">Browse by Category</a>
         <a href="#">My Cart</a>
         <a href="#">My Profile</a>
+        <a href="#" id="generateStatsLink">Generate Statistics</a>
     </div>
     
     <div class="main-content" id="artworkList">
-        <div class="art-container">
-            {% for filename in image_filenames %}
-            <div class="art-container">
-                <img src="{{ url_for('static', filename='uploads/' + filename) }}" alt="Artwork Title">
-                <h3>Artwork Title</h3>
-                <p>Artist Name</p>
-                <p>Price</p>
-                <div class="button-group">
-                    <button class="add-to-cart">Add to Cart</button>
-                    <button class="delete-artwork" data-artwork-id="{{ artwork.id }}">
-                        <img src="static/trash.png" alt="Delete">
-                    </button>                    
-                </div>
+        {% for artwork in artworks %}
+        <div class="art-container" id="art-container-{{ artwork.id }}">
+            <img src="{{ url_for('static', filename='uploads/' + artwork.image_url) }}" alt="{{ artwork.title }}">
+            <h3>{{ artwork.title }}</h3>
+            <p>{{ artwork.artist }}</p>
+            <p>Price: {{ artwork.price }}</p>
+            <div class="button-group">
+                <button class="add-to-cart">Add to Cart</button>
+                <button class="delete-artwork" data-artwork-id="{{ artwork.id }}">Delete</button>
+                <button class="edit-artwork" data-artwork-id="{{ artwork.id }}">Edit</button>
             </div>
-            {% endfor %}
+    
+            <!-- Hidden edit form -->
+            <div class="edit-form" id="edit-form-{{ artwork.id }}" style="display: none;">
+                <form method="POST" action="{{ url_for('edit_artwork') }}">
+                    <input type="hidden" name="artwork_id" value="{{ artwork.id }}">
+                    <input type="text" name="new_artist" placeholder="New Artist Name">
+                    <input type="number" name="new_price" placeholder="New Price">
+                    <button type="submit">Update Artwork</button>
+                </form>
+            </div>
         </div>
-        <!-- Iterate for each artwork -->
+        {% endfor %}
     </div>
     
     <div id="backdrop"></div>

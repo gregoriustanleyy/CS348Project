@@ -210,3 +210,14 @@ body {
   text-decoration: none;
   cursor: pointer;
 }
+
+.edit-form {
+  position: fixed;
+  background-color: white;
+  border: 1px solid #ddd;
+  padding: 20px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000; /* Make sure it's above other items */
+}

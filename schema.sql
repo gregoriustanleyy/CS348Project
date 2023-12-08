@@ -7,3 +7,7 @@ CREATE TABLE artworks (
     image_url TEXT NOT NULL,
     listed INTEGER NOT NULL DEFAULT 1
 );
+
+CREATE INDEX idx_price ON artworks(price);
+CREATE INDEX idx_artist ON artworks(artist);
+CREATE INDEX idx_listed ON artworks(listed);

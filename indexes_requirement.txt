@@ -1,0 +1,10 @@
+1. average price [price]
+2. total artwork 
+3. price range distribution [price]
+4. avg price (listed vs non listed) [listed]
+5. number of artworks listed v not listed [listed]
+6. number of artworks by each artist [artist]
+7. artworks priced above $2000 [price]
+8. top artists by average [artist and price]
+9. most common artwork price points [price]
+10. average price in each price range [price]

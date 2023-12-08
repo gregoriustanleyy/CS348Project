@@ -30,19 +30,29 @@ function addNewArtworkToDOM(artwork) {
     const artworkList = document.getElementById('artworkList');
     const artContainer = document.createElement('div');
     artContainer.className = 'art-container';
-    artContainer.setAttribute('data-id', artwork.id); 
+    artContainer.setAttribute('data-id', artwork.id);
 
     artContainer.innerHTML = `
         <img src="${artwork.image_url}" alt="${artwork.title}">
         <h3>${artwork.title}</h3>
-        <p>${artwork.artist}</p> <!-- Adjust according to your data structure -->
+        <p>${artwork.artist}</p>
         <p>Price: $${artwork.price}</p>
         <button class="add-to-cart">Add to Cart</button>
-        <button class="delete-artwork" data-id="${artwork.id}">Delete</button>
+        <button class="delete-artwork" data-id="${artwork.id}">Deleteee</button>
+        <button class="edit-artwork" data-artwork-id="${artwork.id}">Edit</button>
+        <div class="edit-form" id="edit-form-${artwork.id}" style="display: none;">
+            <form method="POST" action="/edit_artwork">
+                <input type="hidden" name="artwork_id" value="${artwork.id}">
+                <input type="text" name="new_artist" placeholder="New Artist Name">
+                <input type="number" name="new_price" placeholder="New Price">
+                <button type="submit">Update Artwork</button>
+            </form>
+        </div>
     `;
 
     artworkList.insertBefore(artContainer, artworkList.firstChild);
     artContainer.querySelector('.delete-artwork').addEventListener('click', handleDeleteArtwork);
+    attachEditButtonListener(artwork.id);
 }
 
 function showAddArtworkForm() {
@@ -73,14 +83,35 @@ function updateArtworkList() {
                 <p>${artwork.price}</p>
                 <button>Add to Cart</button>
                 <button class="delete-artwork" data-id="${artwork.id}">Delete</button>
+                <button class="edit-artwork" data-artwork-id="${artwork.id}">Edit</button>
+                <div class="edit-form" id="edit-form-${artwork.id}" style="display: none;">
+                    <form method="POST" action="/edit_artwork">
+                        <input type="hidden" name="artwork_id" value="${artwork.id}">
+                        <input type="text" name="new_artist" placeholder="New Artist Name">
+                        <input type="number" name="new_price" placeholder="New Price">
+                        <button type="submit">Update Artwork</button>
+                    </form>
+                </div>
             `;
             artworkList.appendChild(artContainer);
             artContainer.querySelector('.delete-artwork').addEventListener('click', handleDeleteArtwork)
+            attachEditButtonListener(artwork.id);
         });
     })
     .catch(error => {
         console.error('Error fetching artworks:', error);
     });
+}
+
+function attachEditButtonListener(artworkId) {
+    const editButton = document.querySelector(`.edit-artwork[data-artwork-id='${artworkId}']`);
+    const editForm = document.getElementById(`edit-form-${artworkId}`);
+
+    if (editButton && editForm) {
+        editButton.addEventListener('click', function() {
+            editForm.style.display = 'block';
+        });
+    }
 }
 
 function handleDeleteArtwork(event) {
@@ -126,3 +157,28 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     updateArtworkList();
 });
+
+document.getElementById('homeLink').addEventListener('click', function(event) {
+    event.preventDefault();
+    resetToHome();
+});
+
+function resetToHome() {
+    document.getElementById('artworkList').innerHTML = '';
+    updateArtworkList();
+}
+
+
+document.getElementById('generateStatsLink').addEventListener('click', function(event) {
+    event.preventDefault();
+    fetchStatisticsContent();
+});
+
+function fetchStatisticsContent() {
+    fetch('/statistics_content')
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('artworkList').innerHTML = data.htmlContent;
+    })
+    .catch(error => console.error('Error fetching statistics:', error));
+}
