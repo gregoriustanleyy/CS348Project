@@ -46,6 +46,7 @@ function addNewArtworkToDOM(artwork) {
                 <input type="text" name="new_artist" placeholder="New Artist Name">
                 <input type="number" name="new_price" placeholder="New Price">
                 <button type="submit">Update Artwork</button>
+                <button type="button" onclick="closeEditForm(${artwork.id})">Cancel</button>
             </form>
         </div>
     `;
@@ -90,6 +91,7 @@ function updateArtworkList() {
                         <input type="text" name="new_artist" placeholder="New Artist Name">
                         <input type="number" name="new_price" placeholder="New Price">
                         <button type="submit">Update Artwork</button>
+                        <button type="button" onclick="closeEditForm(${artwork.id})">Cancel</button>
                     </form>
                 </div>
             `;
@@ -111,6 +113,13 @@ function attachEditButtonListener(artworkId) {
         editButton.addEventListener('click', function() {
             editForm.style.display = 'block';
         });
+    }
+}
+
+function closeEditForm(artworkId) {
+    var editForm = document.getElementById(`edit-form-${artworkId}`);
+    if (editForm) {
+        editForm.style.display = 'none';
     }
 }
 

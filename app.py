@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, jsonify, send_from_directory, url_for
+from flask import Flask, request, render_template, jsonify, send_from_directory, url_for, redirect
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
 import os
@@ -112,18 +112,15 @@ def edit_artwork():
     try:
         artwork = Artwork.query.get(artwork_id)
         if artwork:
-            if new_artist:
-                artwork.artist = new_artist
-            if new_price:
-                artwork.price = float(new_price)
+            artwork.artist = new_artist if new_artist else artwork.artist
+            artwork.price = float(new_price) if new_price else artwork.price
             db.session.commit()
-            return jsonify({"message": "Artwork updated successfully"}), 200
+            return redirect(url_for('index', edit='success'))
         else:
-            return jsonify({"error": "Artwork not found"}), 404
+            return redirect(url_for('index', edit='error'))
     except Exception as e:
         db.session.rollback()
-        return jsonify({"error": str(e)}), 500
-
+        return redirect(url_for('index', edit='error'))
 
 @app.route('/statistics_content')
 def statistics_content():

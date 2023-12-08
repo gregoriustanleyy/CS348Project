@@ -70,6 +70,17 @@
     <div class="footer">
         <p>© 2023 ArtNet - All Rights Reserved</p>
     </div>
+    <script>
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const editStatus = urlParams.get('edit');
+            if (editStatus === 'success') {
+                alert('Artwork updated successfully!');
+            } else if (editStatus === 'error') {
+                alert('Error updating artwork.');
+            }
+        };
+        </script>
 </body>
 <script src="/static/js/uploadArtwork.js"></script>
 </html>
