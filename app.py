@@ -1,5 +1,6 @@
-from flask import Flask, request, render_template, jsonify, send_from_directory, url_for, redirect
+from flask import Flask, request, render_template, jsonify, send_from_directory, url_for, redirect, flash
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.exc import SQLAlchemyError
 from werkzeug.utils import secure_filename
 import os
 from os.path import isfile, join
@@ -27,6 +28,7 @@ class Artwork(db.Model):
     price = db.Column(db.Float, nullable=False)
     image_url = db.Column(db.String(200), nullable=False)
     listed = db.Column(db.Boolean, default=True, nullable=False)
+    is_locked = db.Column(db.Boolean, default=False)
 
 def get_db_connection():
     db_path = os.path.join(app.instance_path, 'artnet_db.sqlite3')
@@ -110,16 +112,36 @@ def edit_artwork():
     new_price = request.form.get('new_price')
 
     try:
+        # Start a new transaction
+        db.session.begin_nested()
+
         artwork = Artwork.query.get(artwork_id)
         if artwork:
+            print(f"Artwork found: {artwork.title}")
+            if artwork.is_locked:
+                print("Artwork is currently locked.")
+                db.session.rollback()
+                return redirect(url_for('index', edit='locked'))
+
+            artwork.is_locked = True
+            db.session.commit()
+
             artwork.artist = new_artist if new_artist else artwork.artist
             artwork.price = float(new_price) if new_price else artwork.price
             db.session.commit()
+
+            artwork.is_locked = False
+            db.session.commit()
+
             return redirect(url_for('index', edit='success'))
         else:
-            return redirect(url_for('index', edit='error'))
+            print("Artwork not found.")
+            db.session.rollback()
+            return redirect(url_for('index', edit='notfound'))
+
     except Exception as e:
         db.session.rollback()
+        print(f"Error updating artwork: {e}")
         return redirect(url_for('index', edit='error'))
 
 @app.route('/statistics_content')

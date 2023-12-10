@@ -191,3 +191,17 @@ function fetchStatisticsContent() {
     })
     .catch(error => console.error('Error fetching statistics:', error));
 }
+
+window.onload = function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const editStatus = urlParams.get('edit');
+    if (editStatus === 'success') {
+        alert('Artwork updated successfully!');
+    } else if (editStatus === 'locked') {
+        alert('Artwork is currently being edited by another user.');
+    } else if (editStatus === 'notfound') {
+        alert('Artwork not found.');
+    } else if (editStatus === 'error') {
+        alert('Error updating artwork.');
+    }
+};
